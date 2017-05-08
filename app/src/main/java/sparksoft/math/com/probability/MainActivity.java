@@ -3,6 +3,8 @@ package sparksoft.math.com.probability;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.media.Image;
@@ -29,10 +31,12 @@ import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import java.io.File;
 import java.util.Random;
+import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -60,10 +64,25 @@ public class MainActivity extends Activity{
             @Override
             public void onClick(View v) {
 
-
                 EditText trials = (EditText)findViewById(R.id.etTrials);
                 int trial = Integer.parseInt(trials.getText().toString());
-                trials.setEnabled(false);
+                //trials.setEnabled(false);
+
+                if(trial < 1 || trial > 52)
+                {
+                    Toast.makeText(getApplicationContext(), "Please input a valid number from 1 to 52", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Bitmap mBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cards);
+
+                Stack<Integer> cards = new Stack<Integer>();
+                for(int i = 0; i < 52; i++)
+                {
+                    cards.add(i);
+                }
+
+
 
                 LinearLayout llResults = (LinearLayout)findViewById(R.id.llResults);
                 llResults.removeAllViews();
@@ -107,6 +126,10 @@ public class MainActivity extends Activity{
                 int height = displayMetrics.heightPixels;
                 int width = displayMetrics.widthPixels;
 
+                int cardValue;
+
+
+
 
                 for(int i = 0; i < trial; i++)
                 {
@@ -118,7 +141,8 @@ public class MainActivity extends Activity{
                     int wheelResult = Math.abs(wheel.nextInt())%12;
 
                     Random deck = new Random(System.currentTimeMillis());
-                    int deckResult = deck.nextInt()%52;
+                    Integer deckResult = Math.abs(deck.nextInt()%cards.size());
+                    //Log.i("Card", deckResult.toString());
 
                     TextView tvTrial = new TextView(getApplicationContext());
                     android.view.ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(svResults.getWidth(),svResults.getHeight()/5);
@@ -176,6 +200,43 @@ public class MainActivity extends Activity{
 
                     }
 
+                    ImageView ivCard = new ImageView(getApplicationContext());
+                    ivCard.setLayoutParams(layoutParams);
+                    int cardVal = cards.remove(deckResult.intValue());
+                    Log.i("Card", Integer.toString(cardVal));
+
+                    //Log.i("Bitmap", "width:" + mBitmap.getWidth());
+                    //Log.i("Bitmap", "height:" + mBitmap.getHeight());
+
+                    if(cardVal < 13)
+                    {
+                        Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*cardVal, 0, mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        ivCard.setImageBitmap(cardBitmap);
+
+                    }
+
+                    else if (cardVal >= 13 && cardVal < 26)
+                    {
+                        Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-13),mBitmap.getHeight()/5 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        ivCard.setImageBitmap(cardBitmap);
+                    }
+                    else if (cardVal >= 26 && cardVal < 39)
+                    {
+                        Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-26),mBitmap.getHeight()/5 *2 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        ivCard.setImageBitmap(cardBitmap);
+                    }
+                    else if (cardVal >= 39 && cardVal < 52)
+                    {
+                        Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-39),mBitmap.getHeight()/5 *3 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        ivCard.setImageBitmap(cardBitmap);
+                    }
+
+
+
+
+                    //Log.i("Card", cards.remove(deckResult.intValue()).toString());
+
+
                     LinearLayout resultsContainer = new LinearLayout(getApplicationContext());
                     android.view.ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(width,height/3);
                     resultsContainer.setOrientation(LinearLayout.VERTICAL);
@@ -190,6 +251,7 @@ public class MainActivity extends Activity{
 
                     results.addView(ivWheel);
                     results.addView(ivDie);
+                    results.addView(ivCard);
                     resultsContainer.addView(tvTrial);
                     resultsContainer.addView(results);
                     llResults.addView(resultsContainer, i);
