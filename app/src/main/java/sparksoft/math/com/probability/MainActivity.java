@@ -1,19 +1,12 @@
 package sparksoft.math.com.probability;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -23,18 +16,15 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import java.io.File;
 import java.util.Random;
 import java.util.Stack;
 import java.util.Timer;
@@ -173,28 +163,36 @@ public class MainActivity extends Activity{
                     ImageView ivDie = new ImageView(getApplicationContext());
                     ivDie.setLayoutParams(layoutParams);
 
-
-
+                    Bitmap mBitmapDice = BitmapFactory.decodeResource(getResources(), R.drawable.dice);
+                    Log.d("Width", Integer.toString(mBitmapDice.getWidth()));
+                    Log.d("Width", Integer.toString(mBitmapDice.getHeight()));
+                    Bitmap diceBitmap;
                     switch (dieResult)
                     {
                         case 1:
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, 0, 0, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
 
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d1));
                             break;
                         case 2:
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d2));
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, mBitmapDice.getWidth()/3, 0, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
                             break;
                         case 3:
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d3));
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, mBitmapDice.getWidth()/3*2, 0, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
                             break;
                         case 4:
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d4));
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, 0, mBitmapDice.getHeight()/2, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
                             break;
                         case 5:
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d5));
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, mBitmapDice.getHeight()/2, mBitmapDice.getWidth()/3, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
                             break;
                         case 0:
-                            ivDie.setImageDrawable(getDrawable(R.drawable.d6));
+                            diceBitmap = Bitmap.createBitmap(mBitmapDice, mBitmapDice.getWidth()/3*2, mBitmapDice.getHeight()/2, mBitmapDice.getWidth()/3, mBitmapDice.getHeight()/2);
+                            ivDie.setImageBitmap(diceBitmap);
                             break;
 
 
