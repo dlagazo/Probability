@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
@@ -34,9 +33,16 @@ public class MainActivity extends Activity{
 
     int count = 0;
     Timer myTimer = new Timer();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         setContentView(R.layout.activity_main);
 
         VideoView mVideoView  = (VideoView)findViewById(R.id.vidCard);
@@ -44,7 +50,8 @@ public class MainActivity extends Activity{
         String path = "android.resource://" + getPackageName() + "/" + R.raw.card1;
         mVideoView.requestFocus();
         mVideoView.setVideoURI(Uri.parse(path));
-        mVideoView.seekTo(2);
+        mVideoView.seekTo(10);
+        mVideoView.start();
 
 
 
@@ -80,17 +87,19 @@ public class MainActivity extends Activity{
                 ScrollView svResults = (ScrollView)findViewById(R.id.svResults);
 
 
-
-
-
+                /*
+                GifImageView gifImageView = (GifImageView) findViewById(R.id.GifImageView);
+                gifImageView.setGifImageResource(R.drawable.shuffle);
+                */
                 VideoView mVideoView  = (VideoView)findViewById(R.id.vidCard);
                 //mVideoView.setMediaController(new MediaController(this));
                 String path = "android.resource://" + getPackageName() + "/" + R.raw.card1;
                 mVideoView.requestFocus();
                 mVideoView.setVideoURI(Uri.parse(path));
-                mVideoView.seekTo(100);
+                mVideoView.seekTo(0);
 
                 mVideoView.start();
+
 
                 ImageView image= (ImageView) findViewById(R.id.wheel);
                 RotateAnimation rotate = new RotateAnimation(0, 360*10, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
@@ -148,11 +157,25 @@ public class MainActivity extends Activity{
                     //ivWheel.setPivotY(0.5f);
                     float angle = 360/12*wheelResult;
                     ivWheel.setRotation(angle);
-                    ivWheel.setLayoutParams(layoutParams);
 
 
+                    LinearLayout wheelContainer = new LinearLayout(getApplicationContext());
+                    wheelContainer.setOrientation(LinearLayout.VERTICAL);
+                    wheelContainer.setLayoutParams(layoutParams);
+                    wheelContainer.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    ivWheel.setLayoutParams(new ViewGroup.LayoutParams(layoutParams.width, layoutParams.height*8/10));
                     ivWheel.setImageDrawable(getDrawable(R.drawable.w));
+
+                    TextView tvWheelResult = new TextView(getApplicationContext());
+                    tvWheelResult.setText("V");
+                    tvWheelResult.setTextSize(16);
+                    tvWheelResult.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                    tvWheelResult.setWidth(wheelContainer.getWidth());
+                    tvWheelResult.setTextColor(Color.BLACK);
+                    wheelContainer.addView(tvWheelResult);
+                    wheelContainer.addView(ivWheel);
 /*
+
                     Matrix matrix = new Matrix();
                     ivWheel.setScaleType(ImageView.ScaleType.MATRIX);   //required
 
@@ -199,6 +222,8 @@ public class MainActivity extends Activity{
                     }
 
                     ImageView ivCard = new ImageView(getApplicationContext());
+
+
                     ivCard.setLayoutParams(layoutParams);
                     int cardVal = cards.remove(deckResult.intValue());
                     Log.i("Card", Integer.toString(cardVal));
@@ -209,6 +234,7 @@ public class MainActivity extends Activity{
                     if(cardVal < 13)
                     {
                         Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*cardVal, 0, mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        cardBitmap = Bitmap.createScaledBitmap(cardBitmap,(int)(cardBitmap.getWidth()*0.5), (int)(cardBitmap.getHeight()*0.5), true);
                         ivCard.setImageBitmap(cardBitmap);
 
                     }
@@ -216,16 +242,23 @@ public class MainActivity extends Activity{
                     else if (cardVal >= 13 && cardVal < 26)
                     {
                         Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-13),mBitmap.getHeight()/5 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        cardBitmap = Bitmap.createScaledBitmap(cardBitmap,(int)(cardBitmap.getWidth()*0.5), (int)(cardBitmap.getHeight()*0.5), true);
+
                         ivCard.setImageBitmap(cardBitmap);
+
                     }
                     else if (cardVal >= 26 && cardVal < 39)
                     {
                         Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-26),mBitmap.getHeight()/5 *2 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        cardBitmap = Bitmap.createScaledBitmap(cardBitmap,(int)(cardBitmap.getWidth()*0.5), (int)(cardBitmap.getHeight()*0.5), true);
+
                         ivCard.setImageBitmap(cardBitmap);
                     }
                     else if (cardVal >= 39 && cardVal < 52)
                     {
                         Bitmap cardBitmap = Bitmap.createBitmap(mBitmap, mBitmap.getWidth()/13*(cardVal-39),mBitmap.getHeight()/5 *3 , mBitmap.getWidth()/13, mBitmap.getHeight()/5);
+                        cardBitmap = Bitmap.createScaledBitmap(cardBitmap,(int)(cardBitmap.getWidth()*0.5), (int)(cardBitmap.getHeight()*0.5), true);
+
                         ivCard.setImageBitmap(cardBitmap);
                     }
 
@@ -247,7 +280,8 @@ public class MainActivity extends Activity{
                     results.setLayoutParams(lp);
 
 
-                    results.addView(ivWheel);
+
+                    results.addView(wheelContainer);
                     results.addView(ivDie);
                     results.addView(ivCard);
                     resultsContainer.addView(tvTrial);
